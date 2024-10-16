@@ -1,5 +1,17 @@
 import { useState } from 'react'
 
+const Presentation = ({...props}) => {
+  return (
+    <>
+        <h1>{props.title}</h1>
+      <div>
+        {props.anecdote}
+      </div>
+      <p>has {props.vote} votes</p>
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -14,6 +26,7 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [selectedMaxVotes, setSelectedMaxVotes] = useState(0)
 
   const getNextAnecdote = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length))
@@ -22,18 +35,18 @@ const App = () => {
     const copyVotes = {... votes};
     copyVotes[selected]+=1;
     setVotes(copyVotes)
+    if(copyVotes[selected]>votes[selectedMaxVotes]){
+      setSelectedMaxVotes(selected)
+    }
   }
 
   return (
     <>
-      <div>
-        {anecdotes[selected]}
-      </div>
-      <p>has {votes[selected]} votes</p>
+      <Presentation title='Anecdote of the day' anecdote={anecdotes[selected]} vote={votes[selected]}/>
       <button onClick={voteAnecdote}>vote</button>
       <button onClick={getNextAnecdote}>next anecdote</button>
+      <Presentation title='Anecdote with most votes' anecdote={anecdotes[selectedMaxVotes]} vote={votes[selectedMaxVotes]}/>
     </>
-
   )
 }
 
