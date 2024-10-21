@@ -7,7 +7,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
 
   const handlePersonChange = (event) => {
-    setNewName(event.target.value)
+    persons.map((person)=> (person.name === event.target.value) ?
+        alert(`${event.target.value} is already added to phonebook`)
+        & setNewName('')
+      : setNewName(event.target.value))      
   }
 
   const addPerson = (event) => {
