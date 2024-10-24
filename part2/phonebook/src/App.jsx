@@ -17,7 +17,6 @@ const App = () => {
   const handlePersonChange = (event) => {
     persons.map((person)=> (person.name === event.target.value) ?
         alert(`${event.target.value} is already added to phonebook`)
-        & setNewName('')
       : setNewName(event.target.value))  
   }
   const handleNumberChange = (event) => {
@@ -34,12 +33,20 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    personsService.create(personObject).then(person => {
-      setPersons(persons.concat(person))
-      setNewName('')
-      setNewNumber('')
-    })    
-    
+    if(persons.some(person => person.name === newName) && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      const personId = persons.find(person => person.name === newName).id
+      personsService.updatePersonNumber(personObject, personId).then(response => {
+        setPersons(persons.map((person)=> (person.id === personId)? response : person))
+        setNewName('')
+        setNewNumber('')
+      })
+    } else {
+      personsService.create(personObject).then(person => {
+        setPersons(persons.concat(person))
+        setNewName('')
+        setNewNumber('')
+      })
+    }
   }
 
   const deletePerson = (event) => {
