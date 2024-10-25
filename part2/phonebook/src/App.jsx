@@ -12,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [unsuccessfulEvent, setUnsuccessfulEvent] = useState(false)
 
   useEffect(()=> {
     personsService.getAll().then(persons => setPersons(persons))
@@ -61,15 +62,26 @@ const App = () => {
   const deletePerson = (event) => {
     const personName = persons.find(person => person.id === event.target.value).name
     if(window.confirm(`Delete ${personName} ?`)){
-      personsService.deletePerson(event.target.value)
-      setPersons(persons.filter((person)=> (person.id !== event.target.value)))
-    }    
+      personsService.deletePerson(event.target.value).then(setPersons(persons.filter((person)=> (person.id !== event.target.value))))
+        .catch(error => {
+          setUnsuccessfulEvent(true)
+          setNotificationMessage(
+            `Information of ${personName} has already been removed from server`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setUnsuccessfulEvent(false)
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== event.target.value))
+        })
+      
+    }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage}/>
+      <Notification message={notificationMessage} unsuccessfulEvent={unsuccessfulEvent}/>
       <Filter searchName={searchName} handleSearchByName={handleSearchByName}/>
       <h2>Add a new person</h2>
       <PersonForm addPerson={addPerson} newName={newName} handlePersonChange={handlePersonChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
