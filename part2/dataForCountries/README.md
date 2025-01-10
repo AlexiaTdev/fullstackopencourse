@@ -8,3 +8,7 @@
 - [x] When there is only one country matching the query, then the basic data of the country (eg. capital and area), its flag and the languages spoken are shown
 - [x] Create specific components
 - [x] restyle list
+
+## Exercise 2.19 step 2
+- [x] when the names of multiple countries are shown on the page there is a button next to the name of the country
+- [x] when pressed shows the view for that country

@@ -1,46 +1,16 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
 
-function addIndexToListObject(list) {
-  return list?.map((value, i)=> {return {id:i, value:value}})
-}
-
-const ListContent = (props) => {
-  if(props.listType=='country'){
-    return (
-    <>
-      {addIndexToListObject(props.listValue)?.map((country) => { return <p key={country.id}>{country.value}</p> })}
-    </>
-    )
-  } else if(props.listType=='languages'){
-    return(
-      <ul>
-        {addIndexToListObject(props.listValue)?.map((language) => { return <li key={language.id}>{language.value}</li> })}
-      </ul>
-    )
-  }
-}
-
-const CountryDetails = (props) => {
-  return (
-    <>
-      <h1>{props.countryDetails.name}</h1>
-      <p>capital {props.countryDetails.capital}</p>
-      <p>area {props.countryDetails.area}</p>
-      <h3>languages:</h3>
-      <ListContent listType='languages' listValue={props.countryDetails.languages}/>
-      <img src={props.countryDetails.flag}/>
-    </>
-  )
-}
-
 function App() {
+  
   const [countries, setCountries] = useState([])
   const [searchedCountries, setSearchedCountries] = useState([])
   const [detailedCountry, setdetailedCountry] = useState([])
   const handleSearchChange = (event) => {
-    setSearchedCountries(countries.filter((element)=> element.toLowerCase().includes(event.target.value)))
-
+    setSearchedCountries(countries.filter((element)=> element.toLowerCase().includes(event.target.value.toLowerCase())))
+  }
+  const selectCountry = (country) => {
+    setSearchedCountries(countries.filter((element)=> element.toLowerCase().includes(country.toLowerCase())));
   }
   useEffect(()=>{
     if (countries.length==0) {
@@ -62,6 +32,45 @@ function App() {
       )
     }
   },[searchedCountries])
+
+  function addIndexToListObject(list) {
+    return list?.map((value, i)=> {return {id:i, value:value}})
+  }
+
+
+  const ListContent = (props) => {
+    if(props.listType=='country'){
+      return (
+      <>
+        {addIndexToListObject(props.listValue)?.map((country) => { 
+          return  <div>
+                    <p key={country.id} style={{display: 'inline-block', minWidth: '17vw'}}>{country.value}</p>
+                    <button onClick={()=>{selectCountry(country.value)}} style={{display: 'inline-block', minWidth: '8vw'}}>show</button>
+                  </div>
+          })}
+      </>
+      )
+    } else if(props.listType=='languages'){
+      return(
+        <ul>
+          {addIndexToListObject(props.listValue)?.map((language) => { return <li key={language.id}>{language.value}</li> })}
+        </ul>
+      )
+    }
+  }
+
+  const CountryDetails = (props) => {
+    return (
+      <>
+        <h1>{props.countryDetails.name}</h1>
+        <p>capital {props.countryDetails.capital}</p>
+        <p>area {props.countryDetails.area}</p>
+        <h3>languages:</h3>
+        <ListContent listType='languages' listValue={props.countryDetails.languages}/>
+        <img src={props.countryDetails.flag}/>
+      </>
+    )
+  }
   
   return (
     <>
