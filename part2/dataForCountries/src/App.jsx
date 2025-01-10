@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
+import weatherService from './services/weather'
 
 function App() {
   
   const [countries, setCountries] = useState([])
   const [searchedCountries, setSearchedCountries] = useState([])
   const [detailedCountry, setdetailedCountry] = useState([])
+  const [detailedWeather, setDetailedWeather] = useState([])
+
   const handleSearchChange = (event) => {
     setSearchedCountries(countries.filter((element)=> element.toLowerCase().includes(event.target.value.toLowerCase())))
   }
@@ -30,13 +33,27 @@ function App() {
           })
         }
       )
+      
     }
   },[searchedCountries])
+
+  useEffect(()=>{
+    if (searchedCountries.length==1) {
+      weatherService.getWeather(detailedCountry.name, detailedCountry.capital).then(response => 
+        {
+          setDetailedWeather({
+            temp: response.main.temp,
+            icon: response.weather[0].icon,
+            wind: response.wind.speed,
+          })
+        }
+      )
+    }
+  },[detailedCountry])
 
   function addIndexToListObject(list) {
     return list?.map((value, i)=> {return {id:i, value:value}})
   }
-
 
   const ListContent = (props) => {
     if(props.listType=='country'){
@@ -72,6 +89,18 @@ function App() {
     )
   }
   
+  const WeatherDetails = (props) => {
+    var celciusTemp = (props.detailedWeather.temp -273.15).toFixed(2);
+    return (
+      <>
+        <h1>Weather in {props.countryDetails.capital}</h1>
+        <p>temperature {celciusTemp} Celcius</p>
+        <img src={"https://openweathermap.org/img/wn/"+props.detailedWeather.icon+"@2x.png"}/>
+        <p>wind {props.detailedWeather.wind} m/s</p>
+      </>
+    )
+  }
+  
   return (
     <>
       <>
@@ -83,7 +112,10 @@ function App() {
           : (searchedCountries!=[] && searchedCountries.length!=1) ?
             <ListContent listType='country' listValue={searchedCountries}/>
             : (searchedCountries.length==1 && detailedCountry!=[]) ?
-              <CountryDetails countryDetails={detailedCountry}/>
+              <>
+                <CountryDetails countryDetails={detailedCountry}/>
+                <WeatherDetails countryDetails={detailedCountry} detailedWeather={detailedWeather}/>
+              </>
               : ''
       }
     </>

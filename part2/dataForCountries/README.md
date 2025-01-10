@@ -12,3 +12,9 @@
 ## Exercise 2.19 step 2
 - [x] when the names of multiple countries are shown on the page there is a button next to the name of the country
 - [x] when pressed shows the view for that country
+
+## Exercise 2.20 step 3
+- [x] Add weather of the capital on the detailed country view, using API https://openweathermap.org :
+    - [x] temperature
+    - [x] weather icon
+    - [x] wind info
