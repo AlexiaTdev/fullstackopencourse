@@ -43,6 +43,11 @@ const App = () => {
         setPersons(persons.map((person)=> (person.id === personId)? response : person))
         setNewName('')
         setNewNumber('')
+      }).catch(error => {
+        console.log(error.response.data.error)
+        setNotificationMessage(
+          `${error.response.data.error}`
+        )
       })
     } else {
       personsService.create(personObject).then(person => {
