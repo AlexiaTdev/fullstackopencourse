@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = '/api/persons'  // back deployed on render & front built
 
 const getAll = () => {
     const request =  axios.get(baseUrl)

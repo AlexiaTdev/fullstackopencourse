@@ -49,6 +49,11 @@ const App = () => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
+      }).catch(error => {
+        console.log(error.response.data.error)
+        setNotificationMessage(
+          `${error.response.data.error}`
+        )
       })
       setNotificationMessage(
         `Added ${personObject.name}`
@@ -87,6 +92,7 @@ const App = () => {
       <PersonForm addPerson={addPerson} newName={newName} handlePersonChange={handlePersonChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
       <Persons persons={persons} searchName={searchName} deletePerson={deletePerson}/>
+      <p>new uibuild 1</p>
     </div>
   )
 }
